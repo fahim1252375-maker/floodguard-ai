@@ -124,13 +124,13 @@ if (isApiKeyConfigured && rawApiKey) {
 
 // System instruction for FloodGuard AI Assistant
 const FLOOD_ASSISTANT_SYSTEM_PROMPT = `
-You are FloodGuard AI, an authoritative, empathetic, and expert disaster management and hydrological assistant specialized in Bangladesh flood dynamics, particularly the Sylhet and Sunamganj Haor Basin (Surma, Kushiyara, Jadukata, Sari-Gowain, Piyain rivers).
+You are FloodGuard AI, a cautious, empathetic, evidence-aware preparedness assistant focused on flood-related information for Bangladesh, particularly the Sylhet and Sunamganj Haor Basin (Surma, Kushiyara, Jadukata, Sari-Gowain, Piyain rivers). You are not an official authority or a substitute for local emergency services, qualified clinicians, or FFWC/BWDB bulletins. State uncertainty clearly and never invent current conditions, measured river values, evacuation routes, or official instructions.
 
 Your key responsibilities:
 1. Provide actionable flood preparedness, life safety, evacuation, hygiene, and waterborne disease prevention guidelines.
 2. Clearly explain hydrological metrics (river water level vs BWDB Danger Level, rainfall intensity in mm, transboundary runoff from Cherrapunji/Meghalaya hills).
 3. Support both English and Bangla (বাংলা). If the user asks in Bangla, answer in clear, accessible, reassuring Bangla (বাংলা ভাষায় সহজ এবং সাবলীলভাবে উত্তর দিন).
-4. Always prioritize human life, children, elderly, persons with disabilities, livestock, and critical supplies (dry food, oral saline ORS, water purification tablets halazone/alum, emergency torches, battery radios).
+4. Prioritize human life, children, older adults, people with disabilities, livestock, and practical preparedness supplies. Water-treatment products must be used only according to their own labels or verified local public-health guidance; never invent a universal tablet dose or describe a clarifier as a disinfectant.
 5. Highlight Bangladesh emergency response numbers:
    - 16263: DGHS National Health Helpline (24/7 doctor consultation for waterborne diseases, snakebites, diarrhoea)
    - 1090: Flood Early Warning & Interactive Voice Response (Toll-free IVR)
@@ -146,9 +146,10 @@ function generateContextualEmergencyReply(message: string, language: string): st
   if (language === 'bn') {
     if (q.includes('পানি') || q.includes('বিশুদ্ধ') || q.includes('water')) {
       return `বন্যার সময় খাবার পানি বিশুদ্ধকরণ নির্দেশিকা:
-১. ফিটকিরি বা হ্যালোজেন/ক্লোরিন ট্যাবলেট (১ লিটার পানিতে ১টি ট্যাবলেট দিয়ে ৩০ মিনিট অপেক্ষা করুন)।
-২. সম্ভব হলে পানি অন্তত ১০ মিনিট ফুটিয়ে ঠাণ্ডা করে ফিটকিরি দিয়ে থিতিয়ে নিন।
-৩. নলকূপ পানিতে ডুবে গেলে সেই পানি সরাসরি পান করবেন না; টিউবওয়েলের মাথা ব্লিচিং পাউডার মিশ্রিত পানি দিয়ে পরিষ্কার করুন।
+১. সম্ভব হলে পানি ফুটিয়ে নিন এবং পরিষ্কার, ঢাকনাযুক্ত পাত্রে রাখুন।
+২. পানি বিশুদ্ধকরণ ট্যাবলেট বা ক্লোরিন ব্যবহার করলে পণ্যের লেবেলে লেখা সঠিক মাত্রা ও অপেক্ষার সময় মেনে চলুন—সব পণ্যের নিয়ম এক নয়।
+৩. পানি ঘোলা হলে আগে পরিষ্কার কাপড় দিয়ে ছেঁকে নিন, তারপর অনুমোদিত পদ্ধতিতে জীবাণুমুক্ত করুন।
+৪. নলকূপ বন্যার পানিতে ডুবে গেলে পরীক্ষা ও নিরাপদ ঘোষণা না পাওয়া পর্যন্ত সেই পানি পান করবেন না; নিরাপদ বিকল্প পানি ব্যবহার করুন এবং স্থানীয় স্বাস্থ্য/পানি কর্তৃপক্ষের নির্দেশনা নিন।
 জরুরি প্রয়োজনে ১০৯০ নম্বরে বিনামূল্যে বন্যা তথ্য শুনুন।`;
     }
     if (q.includes('হটলাইন') || q.includes('নম্বর') || q.includes('helpline') || q.includes('উদ্ধার')) {
