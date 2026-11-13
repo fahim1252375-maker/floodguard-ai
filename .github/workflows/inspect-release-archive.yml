@@ -87,6 +87,18 @@ jobs:
 
           exit "$STATUS"
 
+      - name: Upload extracted release source
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: floodguard-release-source
+          path: |
+            ${{ env.PROJECT_ROOT }}/
+            !${{ env.PROJECT_ROOT }}/node_modules/**
+            !${{ env.PROJECT_ROOT }}/dist/**
+          include-hidden-files: true
+          if-no-files-found: warn
+
       - name: Upload quality report
         if: always()
         uses: actions/upload-artifact@v4
