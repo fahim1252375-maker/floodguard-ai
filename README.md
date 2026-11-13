@@ -132,7 +132,7 @@ GEMINI_API_KEY="your-gemini-api-key"
 GEMINI_MODEL="models/gemini-2.5-flash"
 
 # Optional: Master PIN for the Admin portal.
-# If omitted or left blank in development, the server generates an ephemeral random 6-digit PIN and logs it to the terminal. Production requires a private 6-32 character value.
+# If omitted or left blank in development, the server generates an ephemeral random 6-digit PIN and logs it to the terminal. Production requires a private 6-128 character value.
 ADMIN_PIN=""
 
 PORT=3000
@@ -203,7 +203,7 @@ A successful start is not a substitute for the full test, type-check and product
 
 ### Production settings
 
-- Set `NODE_ENV=production`, `ADMIN_PIN` (a unique private value of 6-32 characters), and `GEMINI_API_KEY` where applicable.
+- Set `NODE_ENV=production`, `ADMIN_PIN` (a unique private value of 6-128 characters), and `GEMINI_API_KEY` where applicable.
 - Set `OPS_SEED_DEMO=false` so demo history is not mixed into monitoring history.
 - Mount a persistent disk for `data/`; set `OPS_DB_PATH` if the disk is mounted elsewhere. Back up SQLite plus the two JSON persistence files.
 - Configure `NOTIFY_WEBHOOK_URL` only when a compatible SMS gateway adapter exists. Without an adapter, SMS jobs remain queued in the outbox; no SMS is sent by the app itself.
