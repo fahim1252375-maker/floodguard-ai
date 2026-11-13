@@ -1,1 +1,1 @@
-Trigger the verified FloodGuard source migration workflow.
+Retry source migration after the fallback metadata fix.
