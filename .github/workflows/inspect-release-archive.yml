@@ -43,75 +43,63 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import os
+          import re
 
-          root = Path(__import__("os").environ["PROJECT_ROOT"])
-
-          def replace_once(path: str, old: str, new: str) -> None:
-              file = root / path
-              source = file.read_text()
-              if old not in source:
-                  raise SystemExit(f"Expected source block not found in {path}; refusing an unsafe patch")
-              file.write_text(source.replace(old, new, 1))
+          root = Path(os.environ["PROJECT_ROOT"])
 
           repo = root / "server/repo.ts"
           source = repo.read_text()
-          source = source.replace(" as StationThresholdRow[]", " as unknown as StationThresholdRow[]")
-          source = source.replace(" as EventRow | undefined", " as unknown as EventRow | undefined")
-          source = source.replace(" as EventRow[]", " as unknown as EventRow[]")
-          source = source.replace(" as SubscriberRow;", " as unknown as SubscriberRow;")
-          source = source.replace(" as SubscriberRow | undefined", " as unknown as SubscriberRow | undefined")
-          source = source.replace(" as SubscriberRow[]", " as unknown as SubscriberRow[]")
+          for old, new in [
+              (" as StationThresholdRow[]", " as unknown as StationThresholdRow[]"),
+              (" as EventRow | undefined", " as unknown as EventRow | undefined"),
+              (" as EventRow[]", " as unknown as EventRow[]"),
+              (" as SubscriberRow;", " as unknown as SubscriberRow;"),
+              (" as SubscriberRow | undefined", " as unknown as SubscriberRow | undefined"),
+              (" as SubscriberRow[]", " as unknown as SubscriberRow[]"),
+          ]:
+              source = source.replace(old, new)
           repo.write_text(source)
 
-          replace_once(
-              "src/utils/riverDischarge.ts",
-              """        meanDischargeM3s: sylhetCurrent.meanDischargeM3s,
-                  maxDischargeM3s: sylhetCurrent.maxDischargeM3s,
-                  dischargeRatio: sylhetCurrent.dischargeRatio,
-                  surgeStatus: classifySurgeStatus(sylhetCurrent.dischargeRatio),""",
-              """        meanDischargeM3s: sylhetCurrent.meanDischargeM3s ?? 420,
-                  maxDischargeM3s: sylhetCurrent.maxDischargeM3s ?? Math.round(420 * 2.2),
-                  dischargeRatio: sylhetCurrent.dischargeRatio ?? sylhetCurrent.dischargeM3s / 420,
-                  surgeStatus: classifySurgeStatus(sylhetCurrent.dischargeRatio ?? sylhetCurrent.dischargeM3s / 420),"""
-          )
-          replace_once(
-              "src/utils/riverDischarge.ts",
-              """        meanDischargeM3s: sunamganjCurrent.meanDischargeM3s,
-                  maxDischargeM3s: sunamganjCurrent.maxDischargeM3s,
-                  dischargeRatio: sunamganjCurrent.dischargeRatio,
-                  surgeStatus: classifySurgeStatus(sunamganjCurrent.dischargeRatio),""",
-              """        meanDischargeM3s: sunamganjCurrent.meanDischargeM3s ?? 510,
-                  maxDischargeM3s: sunamganjCurrent.maxDischargeM3s ?? Math.round(510 * 2.2),
-                  dischargeRatio: sunamganjCurrent.dischargeRatio ?? sunamganjCurrent.dischargeM3s / 510,
-                  surgeStatus: classifySurgeStatus(sunamganjCurrent.dischargeRatio ?? sunamganjCurrent.dischargeM3s / 510),"""
-          )
+          river = root / "src/utils/riverDischarge.ts"
+          source = river.read_text()
+          for old, new in [
+              ("meanDischargeM3s: sylhetCurrent.meanDischargeM3s,", "meanDischargeM3s: sylhetCurrent.meanDischargeM3s ?? 420,"),
+              ("maxDischargeM3s: sylhetCurrent.maxDischargeM3s,", "maxDischargeM3s: sylhetCurrent.maxDischargeM3s ?? Math.round(420 * 2.2),"),
+              ("dischargeRatio: sylhetCurrent.dischargeRatio,", "dischargeRatio: sylhetCurrent.dischargeRatio ?? sylhetCurrent.dischargeM3s / 420,"),
+              ("surgeStatus: classifySurgeStatus(sylhetCurrent.dischargeRatio),", "surgeStatus: classifySurgeStatus(sylhetCurrent.dischargeRatio ?? sylhetCurrent.dischargeM3s / 420),"),
+              ("meanDischargeM3s: sunamganjCurrent.meanDischargeM3s,", "meanDischargeM3s: sunamganjCurrent.meanDischargeM3s ?? 510,"),
+              ("maxDischargeM3s: sunamganjCurrent.maxDischargeM3s,", "maxDischargeM3s: sunamganjCurrent.maxDischargeM3s ?? Math.round(510 * 2.2),"),
+              ("dischargeRatio: sunamganjCurrent.dischargeRatio,", "dischargeRatio: sunamganjCurrent.dischargeRatio ?? sunamganjCurrent.dischargeM3s / 510,"),
+              ("surgeStatus: classifySurgeStatus(sunamganjCurrent.dischargeRatio),", "surgeStatus: classifySurgeStatus(sunamganjCurrent.dischargeRatio ?? sunamganjCurrent.dischargeM3s / 510),"),
+          ]:
+              if old not in source:
+                  raise SystemExit(f"Expected river expression not found: {old}")
+              source = source.replace(old, new, 1)
+          river.write_text(source)
 
-          replace_once(
-              "src/utils/stationTrends.ts",
-              """  if (!points || points.length < 2) {
-                const base = points?.[0]?.waterLevel ?? station.currentWaterLevel;""",
-              """  const validPoints = (points ?? []).filter(
-                (point): point is StationTrendPoint & { waterLevel: number } =>
-                  typeof point.waterLevel === 'number' && Number.isFinite(point.waterLevel)
-              );
+          trends = root / "src/utils/stationTrends.ts"
+          source = trends.read_text()
+          pattern = r"if \(!points \|\| points\.length < 2\) \{\s*const base = points\?\.\[0\]\?\.waterLevel \?\? station\.currentWaterLevel;"
+          replacement = """const validPoints = (points ?? []).filter(
+            (point): point is StationTrendPoint & { waterLevel: number } =>
+              typeof point.waterLevel === 'number' && Number.isFinite(point.waterLevel)
+          );
 
-              if (validPoints.length < 2) {
-                const base = validPoints[0]?.waterLevel ?? station.currentWaterLevel;"""
-          )
-          replace_once(
-              "src/utils/stationTrends.ts",
-              """  const windowSize = Math.min(5, points.length);
-              const recentPoints = points.slice(-windowSize);""",
-              """  const windowSize = Math.min(5, validPoints.length);
-              const recentPoints = validPoints.slice(-windowSize);"""
-          )
-          replace_once(
-              "src/utils/stationTrends.ts",
-              """  const lastPoint = points[points.length - 1];
-              const lastLevel = lastPoint.waterLevel;""",
-              """  const lastPoint = validPoints[validPoints.length - 1];
-              const lastLevel = lastPoint.waterLevel;"""
-          )
+          if (validPoints.length < 2) {
+            const base = validPoints[0]?.waterLevel ?? station.currentWaterLevel;"""
+          source, count = re.subn(pattern, replacement, source, count=1)
+          if count != 1:
+              raise SystemExit("Could not safely patch station trend null filtering")
+          for old, new in [
+              ("const windowSize = Math.min(5, points.length);", "const windowSize = Math.min(5, validPoints.length);"),
+              ("const recentPoints = points.slice(-windowSize);", "const recentPoints = validPoints.slice(-windowSize);"),
+              ("const lastPoint = points[points.length - 1];", "const lastPoint = validPoints[validPoints.length - 1];"),
+          ]:
+              if old not in source:
+                  raise SystemExit(f"Expected trend expression not found: {old}")
+              source = source.replace(old, new, 1)
+          trends.write_text(source)
           PY
 
       - name: Synchronize lockfile and install dependencies
