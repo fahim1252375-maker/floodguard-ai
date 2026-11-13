@@ -1,0 +1,72 @@
+name: Inspect archived FloodGuard source
+
+on:
+  push:
+    branches:
+      - chore/professional-source-layout
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Extract and inspect release archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARCHIVE="$GITHUB_WORKSPACE/FloodGuard_AI_v0.2.0.zip"
+          test -f "$ARCHIVE"
+          mkdir -p "$RUNNER_TEMP/floodguard-release"
+          unzip -q "$ARCHIVE" -d "$RUNNER_TEMP/floodguard-release"
+
+          REPORT="$GITHUB_WORKSPACE/archive-inspection.txt"
+          {
+            echo "FloodGuard AI v0.2.0 archive inspection"
+            echo "======================================"
+            echo
+            echo "Extracted directories:"
+            find "$RUNNER_TEMP/floodguard-release" -maxdepth 3 -type d | sort
+            echo
+            echo "Archive files:"
+            find "$RUNNER_TEMP/floodguard-release" -type f -printf '%P\n' | sort
+            echo
+            echo "Package manifests:"
+            find "$RUNNER_TEMP/floodguard-release" -name package.json -not -path '*/node_modules/*' -print
+          } > "$REPORT"
+
+          cat "$REPORT"
+
+          PACKAGE_JSON="$(find "$RUNNER_TEMP/floodguard-release" -name package.json -not -path '*/node_modules/*' -print -quit)"
+          if [ -n "$PACKAGE_JSON" ]; then
+            PROJECT_ROOT="$(dirname "$PACKAGE_JSON")"
+            echo "PROJECT_ROOT=$PROJECT_ROOT" >> "$GITHUB_ENV"
+            {
+              echo
+              echo "===== package.json ====="
+              cat "$PACKAGE_JSON"
+              echo
+              echo "===== App entry imports ====="
+              APP_FILE="$(find "$PROJECT_ROOT" -name App.tsx -print -quit)"
+              if [ -n "$APP_FILE" ]; then sed -n '1,100p' "$APP_FILE"; fi
+              echo
+              echo "===== SafetyPlanView locations ====="
+              find "$PROJECT_ROOT" -iname '*SafetyPlanView*' -o -iname '*AccessibilityToggle*'
+            } | tee -a "$REPORT"
+          fi
+
+      - name: Upload inspection report
+        uses: actions/upload-artifact@v4
+        with:
+          name: floodguard-archive-inspection
+          path: archive-inspection.txt
+          if-no-files-found: error
