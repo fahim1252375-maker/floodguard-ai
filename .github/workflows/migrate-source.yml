@@ -1,0 +1,73 @@
+name: Apply prepared FloodGuard source
+on:
+  push:
+    branches:
+      - migration/restore-professional-source
+    paths:
+      - ".migration/READY"
+
+permissions:
+  contents: write
+
+jobs:
+  apply-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out migration branch
+        uses: actions/checkout@v4
+        with:
+          ref: migration/restore-professional-source
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install archive tools
+        run: |
+          if ! command -v zstd >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y zstd
+          fi
+
+      - name: Restore source tree and validate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git fetch origin main
+          MAIN_SHA="$(git rev-parse origin/main)"
+
+          cat .migration/payload/chunk-* | base64 --decode > /tmp/floodguard-source.tar.zst
+          zstd --decompress --force /tmp/floodguard-source.tar.zst -o /tmp/floodguard-source.tar
+          mkdir -p /tmp/floodguard-extract
+          tar -xf /tmp/floodguard-source.tar -C /tmp/floodguard-extract
+
+          SOURCE="/tmp/floodguard-extract/FloodGuard-AI"
+          test -f "$SOURCE/frontend/src/views/SafetyPlanView.tsx"
+          test -f "$SOURCE/frontend/src/components/AccessibilityToggle.tsx"
+          test -f "$SOURCE/backend/server.ts"
+          test -f "$SOURCE/.github/workflows/ci.yml"
+
+          # Build the final branch directly from main so the temporary
+          # transfer payload never becomes part of the delivered history.
+          git checkout --detach "$MAIN_SHA"
+          rsync -a --delete --exclude='/.git/' "$SOURCE/" "$GITHUB_WORKSPACE/"
+
+          npm ci --no-audit --no-fund
+          npm run test:all
+          npm run lint
+          npm run build
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "refactor: organize FloodGuard AI source repository"
+          git push origin HEAD:refs/heads/migration/professional-source
+
+          # Remove the transfer commit from the temporary branch reference.
+          git push --force origin "$MAIN_SHA":refs/heads/migration/restore-professional-source
