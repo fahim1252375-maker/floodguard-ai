@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "FloodGuard AI — Community Flood & Health Preparedness",
+  "short_name": "FloodGuard AI",
+  "description": "A bilingual decision-support prototype for flood-health preparedness, transparent risk exploration and community response planning in Bangladesh. Data may be live, derived or simulated and is labelled in the app.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#06b6d4",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
