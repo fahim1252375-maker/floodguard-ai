@@ -19,8 +19,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: /tmp/floodguard-release/floodguard-ai-fullstack/package-lock.json
 
       - name: Extract release source
         shell: bash
