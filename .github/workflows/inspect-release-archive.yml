@@ -30,18 +30,26 @@ jobs:
           test -f "$PROJECT_ROOT/package.json"
           echo "PROJECT_ROOT=$PROJECT_ROOT" >> "$GITHUB_ENV"
 
-      - name: Install dependencies and run quality gates
+      - name: Synchronize lockfile, install dependencies, and run checks
         shell: bash
         run: |
           set +e
           cd "$PROJECT_ROOT"
           STATUS=0
 
-          npm ci > "$RUNNER_TEMP/npm-ci.log" 2>&1
-          CI_STATUS=$?
-          if [ "$CI_STATUS" -ne 0 ]; then STATUS=1; fi
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund > "$RUNNER_TEMP/lockfile.log" 2>&1
+          LOCK_STATUS=$?
+          if [ "$LOCK_STATUS" -ne 0 ]; then STATUS=1; fi
 
-          if [ "$CI_STATUS" -eq 0 ]; then
+          if [ "$LOCK_STATUS" -eq 0 ]; then
+            npm ci --no-audit --no-fund > "$RUNNER_TEMP/npm-ci.log" 2>&1
+            CI_STATUS=$?
+          else
+            CI_STATUS=not-run
+          fi
+          if [ "$CI_STATUS" != "0" ]; then STATUS=1; fi
+
+          if [ "$CI_STATUS" = "0" ]; then
             npm run lint > "$RUNNER_TEMP/lint.log" 2>&1
             LINT_STATUS=$?
             if [ "$LINT_STATUS" -ne 0 ]; then STATUS=1; fi
@@ -62,11 +70,12 @@ jobs:
           {
             echo "FloodGuard AI v0.2.0 verification"
             echo "==============================="
+            echo "Lockfile sync: $LOCK_STATUS"
             echo "npm ci: $CI_STATUS"
             echo "TypeScript lint: $LINT_STATUS"
             echo "All tests: $TEST_STATUS"
             echo "Production build: $BUILD_STATUS"
-            for item in npm-ci lint tests build; do
+            for item in lockfile npm-ci lint tests build; do
               log="$RUNNER_TEMP/$item.log"
               if [ -f "$log" ]; then
                 echo
