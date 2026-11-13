@@ -1,0 +1,39 @@
+name: Feature request
+description: Suggest an improvement to FloodGuard AI.
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Focus on preparedness, accessibility, data transparency, reliability, or maintainability. Do not suggest presenting unverified data as official warnings.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or user need
+      description: What specific problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the behaviour you would like to see.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence, source, or reference
+      description: Add links or explain why this change is useful. Cite authoritative sources for safety-related information.
+    validations:
+      required: false
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Safety and data boundaries
+      options:
+        - label: This proposal does not require publishing private or identifiable community data.
+          required: true
+        - label: I understand the project is a prototype, not an official warning or emergency-response system.
+          required: true
