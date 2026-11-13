@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: floodguard-ai
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm ci --include=dev --no-audit --no-fund && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ADMIN_PIN
+        generateValue: true
+      - key: OPS_SEED_DEMO
+        value: "false"
+      - key: TRUST_PROXY
+        value: "true"
