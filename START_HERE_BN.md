@@ -53,7 +53,7 @@ NODE_ENV="development"
 
 - Gemini key ঐচ্ছিক; key না থাকলেও fallback-সহ অ্যাপের বাকি ফিচার চলার কথা।
 - Local development-এ `ADMIN_PIN` ফাঁকা রাখলে সার্ভার startup-এ random 6-digit PIN terminal-এ দেখাবে। সেটি লিখে রাখুন।
-- Production-এ অবশ্যই নিজের private 6–32 character `ADMIN_PIN` দিন। `.env` কাউকে পাঠাবেন না বা GitHub-এ commit করবেন না।
+- Production-এ অবশ্যই নিজের private 6–128 character `ADMIN_PIN` দিন। `.env` কাউকে পাঠাবেন না বা GitHub-এ commit করবেন না।
 
 ## ৪. অ্যাপ চালু করুন
 
