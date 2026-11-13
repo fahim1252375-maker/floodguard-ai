@@ -9,6 +9,7 @@
 </p>
 
 <p align="center">
+  [![CI](https://github.com/fahim1252375-maker/floodguard-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fahim1252375-maker/floodguard-ai/actions/workflows/ci.yml)
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-0F766E?style=flat-square" alt="MIT License" /></a>
   <img src="https://img.shields.io/badge/Node.js-%3E%3D22.13-43853D?style=flat-square&logo=node.js&logoColor=white" alt="Node.js 22.13 or newer" />
   <img src="https://img.shields.io/badge/Interface-English%20%2B%20Bangla-2563EB?style=flat-square" alt="English and Bangla" />
