@@ -1,0 +1,54 @@
+name: Bug report
+description: Report a reproducible issue in FloodGuard AI.
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not include personal contact details, private community reports, API keys, admin PINs, or other sensitive information. FloodGuard AI is a research/demo prototype, not an emergency service.
+  - type: input
+    id: version
+    attributes:
+      label: Project version or commit
+      placeholder: "e.g. v0.2.0 or commit SHA"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, browser, and Node.js version where relevant.
+      placeholder: "e.g. macOS, Chrome, Node.js 24"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide a minimal sequence using synthetic or non-sensitive data.
+      placeholder: "1. Open ...\n2. Select ...\n3. Observe ..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or screenshots
+      description: Remove tokens, personal data, private location details, and other sensitive values before sharing.
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmation
+      options:
+        - label: I checked that this is not already reported.
+          required: true
+        - label: I removed secrets and personal information from this report.
+          required: true
