@@ -1,4 +1,4 @@
-name: Inspect archived FloodGuard source
+name: Verify archived FloodGuard source
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  inspect-archive:
+  verify-archive:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -19,54 +19,71 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: npm
+          cache-dependency-path: /tmp/floodguard-release/floodguard-ai-fullstack/package-lock.json
 
-      - name: Extract and inspect release archive
+      - name: Extract release source
         shell: bash
         run: |
           set -euo pipefail
-          ARCHIVE="$GITHUB_WORKSPACE/FloodGuard_AI_v0.2.0.zip"
-          test -f "$ARCHIVE"
           mkdir -p "$RUNNER_TEMP/floodguard-release"
-          unzip -q "$ARCHIVE" -d "$RUNNER_TEMP/floodguard-release"
+          unzip -q "$GITHUB_WORKSPACE/FloodGuard_AI_v0.2.0.zip" -d "$RUNNER_TEMP/floodguard-release"
+          PROJECT_ROOT="$RUNNER_TEMP/floodguard-release/floodguard-ai-fullstack"
+          test -f "$PROJECT_ROOT/package.json"
+          echo "PROJECT_ROOT=$PROJECT_ROOT" >> "$GITHUB_ENV"
 
-          REPORT="$GITHUB_WORKSPACE/archive-inspection.txt"
-          {
-            echo "FloodGuard AI v0.2.0 archive inspection"
-            echo "======================================"
-            echo
-            echo "Extracted directories:"
-            find "$RUNNER_TEMP/floodguard-release" -maxdepth 3 -type d | sort
-            echo
-            echo "Archive files:"
-            find "$RUNNER_TEMP/floodguard-release" -type f -printf '%P\n' | sort
-            echo
-            echo "Package manifests:"
-            find "$RUNNER_TEMP/floodguard-release" -name package.json -not -path '*/node_modules/*' -print
-          } > "$REPORT"
+      - name: Install dependencies and run quality gates
+        shell: bash
+        run: |
+          set +e
+          cd "$PROJECT_ROOT"
+          STATUS=0
 
-          cat "$REPORT"
+          npm ci > "$RUNNER_TEMP/npm-ci.log" 2>&1
+          CI_STATUS=$?
+          if [ "$CI_STATUS" -ne 0 ]; then STATUS=1; fi
 
-          PACKAGE_JSON="$(find "$RUNNER_TEMP/floodguard-release" -name package.json -not -path '*/node_modules/*' -print -quit)"
-          if [ -n "$PACKAGE_JSON" ]; then
-            PROJECT_ROOT="$(dirname "$PACKAGE_JSON")"
-            echo "PROJECT_ROOT=$PROJECT_ROOT" >> "$GITHUB_ENV"
-            {
-              echo
-              echo "===== package.json ====="
-              cat "$PACKAGE_JSON"
-              echo
-              echo "===== App entry imports ====="
-              APP_FILE="$(find "$PROJECT_ROOT" -name App.tsx -print -quit)"
-              if [ -n "$APP_FILE" ]; then sed -n '1,100p' "$APP_FILE"; fi
-              echo
-              echo "===== SafetyPlanView locations ====="
-              find "$PROJECT_ROOT" -iname '*SafetyPlanView*' -o -iname '*AccessibilityToggle*'
-            } | tee -a "$REPORT"
+          if [ "$CI_STATUS" -eq 0 ]; then
+            npm run lint > "$RUNNER_TEMP/lint.log" 2>&1
+            LINT_STATUS=$?
+            if [ "$LINT_STATUS" -ne 0 ]; then STATUS=1; fi
+
+            npm run test:all > "$RUNNER_TEMP/tests.log" 2>&1
+            TEST_STATUS=$?
+            if [ "$TEST_STATUS" -ne 0 ]; then STATUS=1; fi
+
+            npm run build > "$RUNNER_TEMP/build.log" 2>&1
+            BUILD_STATUS=$?
+            if [ "$BUILD_STATUS" -ne 0 ]; then STATUS=1; fi
+          else
+            LINT_STATUS=not-run
+            TEST_STATUS=not-run
+            BUILD_STATUS=not-run
           fi
 
-      - name: Upload inspection report
+          {
+            echo "FloodGuard AI v0.2.0 verification"
+            echo "==============================="
+            echo "npm ci: $CI_STATUS"
+            echo "TypeScript lint: $LINT_STATUS"
+            echo "All tests: $TEST_STATUS"
+            echo "Production build: $BUILD_STATUS"
+            for item in npm-ci lint tests build; do
+              log="$RUNNER_TEMP/$item.log"
+              if [ -f "$log" ]; then
+                echo
+                echo "===== $item.log ====="
+                cat "$log"
+              fi
+            done
+          } | tee "$GITHUB_WORKSPACE/quality-report.txt"
+
+          exit "$STATUS"
+
+      - name: Upload quality report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: floodguard-archive-inspection
-          path: archive-inspection.txt
-          if-no-files-found: error
+          name: floodguard-release-quality-report
+          path: quality-report.txt
+          if-no-files-found: warn
