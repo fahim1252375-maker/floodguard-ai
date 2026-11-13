@@ -141,7 +141,7 @@ jobs:
               path = root / name
               if path.exists():
                   lines = [line.rstrip() for line in path.read_text().splitlines()]
-                  path.write_text("\\n".join(lines).rstrip() + "\\n")
+                  path.write_text("\n".join(lines).rstrip() + "\n")
           PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
