@@ -128,6 +128,21 @@ jobs:
           set -euo pipefail
           rsync -a --delete --exclude='/.git/' --exclude='/.github/' "$PROJECT_ROOT/" "$GITHUB_WORKSPACE/"
           rm -f "$GITHUB_WORKSPACE/FloodGuard_AI_v0.2.0.zip"
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path.cwd()
+          files = [
+              "docs/COMBINATION_RELEASE_REPORT.md",
+              "src/utils/healthRisk.test.ts",
+              "submission/demo-script.md",
+              "submission/devpost-text.md",
+          ]
+          for name in files:
+              path = root / name
+              if path.exists():
+                  lines = [line.rstrip() for line in path.read_text().splitlines()]
+                  path.write_text("\\n".join(lines).rstrip() + "\\n")
+          PY
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
