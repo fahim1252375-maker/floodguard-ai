@@ -68,10 +68,12 @@ jobs:
               ("maxDischargeM3s: sylhetCurrent.maxDischargeM3s,", "maxDischargeM3s: sylhetCurrent.maxDischargeM3s ?? Math.round(420 * 2.2),"),
               ("dischargeRatio: sylhetCurrent.dischargeRatio,", "dischargeRatio: sylhetCurrent.dischargeRatio ?? sylhetCurrent.dischargeM3s / 420,"),
               ("surgeStatus: classifySurgeStatus(sylhetCurrent.dischargeRatio),", "surgeStatus: classifySurgeStatus(sylhetCurrent.dischargeRatio ?? sylhetCurrent.dischargeM3s / 420),"),
+              ("stationId: 'sylhet',", "stationId: 'sylhet',\\n        dataAvailable: true,\\n        dataDate: sylhetCurrent.date,"),
               ("meanDischargeM3s: sunamganjCurrent.meanDischargeM3s,", "meanDischargeM3s: sunamganjCurrent.meanDischargeM3s ?? 510,"),
               ("maxDischargeM3s: sunamganjCurrent.maxDischargeM3s,", "maxDischargeM3s: sunamganjCurrent.maxDischargeM3s ?? Math.round(510 * 2.2),"),
               ("dischargeRatio: sunamganjCurrent.dischargeRatio,", "dischargeRatio: sunamganjCurrent.dischargeRatio ?? sunamganjCurrent.dischargeM3s / 510,"),
               ("surgeStatus: classifySurgeStatus(sunamganjCurrent.dischargeRatio),", "surgeStatus: classifySurgeStatus(sunamganjCurrent.dischargeRatio ?? sunamganjCurrent.dischargeM3s / 510),"),
+              ("stationId: 'sunamganj',", "stationId: 'sunamganj',\\n        dataAvailable: true,\\n        dataDate: sunamganjCurrent.date,"),
           ]:
               if old not in source:
                   raise SystemExit(f"Expected river expression not found: {old}")
