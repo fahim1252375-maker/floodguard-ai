@@ -10,11 +10,11 @@ let generatedRandomPin: string | null = null;
  */
 export function initializeAdminPin(): string {
   const envPin = process.env.ADMIN_PIN?.trim();
-  if (envPin && envPin.length >= 6 && envPin.length <= 32) {
+  if (envPin && envPin.length >= 6 && envPin.length <= 128) {
     return envPin;
   }
   if (envPin) {
-    throw new Error('ADMIN_PIN must be between 6 and 32 characters.');
+    throw new Error('ADMIN_PIN must be between 6 and 128 characters.');
   }
   if (process.env.NODE_ENV === 'production') {
     throw new Error('ADMIN_PIN must be configured in production. Set a unique PIN with at least 6 characters.');
