@@ -169,6 +169,7 @@ A successful local start does not establish that a deployment is live, productio
 - [`docs/ARCHITECTURE_AND_FEATURES.md`](./docs/ARCHITECTURE_AND_FEATURES.md) — architecture and feature details
 - [`docs/COMBINATION_RELEASE_REPORT.md`](./docs/COMBINATION_RELEASE_REPORT.md) — release notes and consolidation report
 - [`docs/QUALITY_REVIEW.md`](./docs/QUALITY_REVIEW.md) — current quality review
+- [SECURITY.md](./SECURITY.md) — vulnerability reporting and security scope
 - [`submission/`](./submission/) — project and demonstration material
 
 ## Privacy and Security
