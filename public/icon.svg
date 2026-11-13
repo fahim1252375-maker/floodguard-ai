@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="108" fill="#020617"/>
+  <circle cx="256" cy="256" r="210" stroke="#0ea5e9" stroke-width="8" stroke-dasharray="16 12" opacity="0.3"/>
+  <circle cx="256" cy="256" r="160" stroke="#06b6d4" stroke-width="6" opacity="0.4"/>
+  <!-- Shield outline -->
+  <path d="M256 90 L390 150 V260 C390 350 256 420 256 420 C256 420 122 350 122 260 V150 Z" fill="#0369a1" fill-opacity="0.25" stroke="#38bdf8" stroke-width="12" stroke-linejoin="round"/>
+  <!-- River water waves -->
+  <path d="M170 270 Q213 240 256 270 T342 270" stroke="#22d3ee" stroke-width="16" stroke-linecap="round"/>
+  <path d="M170 310 Q213 280 256 310 T342 310" stroke="#38bdf8" stroke-width="16" stroke-linecap="round"/>
+  <!-- Radar beacon / early warning pulse -->
+  <circle cx="256" cy="195" r="22" fill="#06b6d4"/>
+  <circle cx="256" cy="195" r="42" stroke="#67e8f9" stroke-width="6" opacity="0.8"/>
+  <circle cx="256" cy="195" r="62" stroke="#67e8f9" stroke-width="4" stroke-dasharray="8 8" opacity="0.5"/>
+</svg>

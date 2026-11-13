@@ -23,7 +23,7 @@ export function getStationThreshold(db: Db, stationId: string): StationThreshold
 }
 
 export function listStationThresholds(db: Db): StationThresholdRow[] {
-  return db.prepare('SELECT station_id, warning_level, danger_level, updated_at, updated_by FROM station_thresholds ORDER BY station_id').all() as StationThresholdRow[];
+  return db.prepare('SELECT station_id, warning_level, danger_level, updated_at, updated_by FROM station_thresholds ORDER BY station_id').all() as unknown as StationThresholdRow[];
 }
 
 export function saveStationThreshold(db: Db, stationId: string, warningLevel: number, dangerLevel: number, actor: string): StationThresholdRow {
@@ -127,19 +127,19 @@ export function insertEvent(db: Db, e: EventInput): EventRow {
 }
 
 export function getEvent(db: Db, id: number): EventRow | undefined {
-  return db.prepare('SELECT * FROM alert_events WHERE id = ?').get(id) as EventRow | undefined;
+  return db.prepare('SELECT * FROM alert_events WHERE id = ?').get(id) as unknown as EventRow | undefined;
 }
 
 export function lastEventFor(db: Db, stationId: string, ruleId: string): EventRow | undefined {
   return db
     .prepare('SELECT * FROM alert_events WHERE station_id = ? AND rule_id = ? ORDER BY created_at DESC, id DESC LIMIT 1')
-    .get(stationId, ruleId) as EventRow | undefined;
+    .get(stationId, ruleId) as unknown as EventRow | undefined;
 }
 
 export function listEvents(db: Db, limit = 50): EventRow[] {
   return db
     .prepare('SELECT * FROM alert_events ORDER BY created_at DESC, id DESC LIMIT ?')
-    .all(Math.min(Math.max(1, limit), 200)) as EventRow[];
+    .all(Math.min(Math.max(1, limit), 200)) as unknown as EventRow[];
 }
 
 export function acknowledgeEvent(db: Db, id: number, actor: string): boolean {
@@ -175,11 +175,11 @@ export function createSubscriber(db: Db, s: SubscriberInput): SubscriberRow {
       'INSERT INTO subscribers (token, location_id, channel, contact, language, min_severity, consent_at, created_at) VALUES (?,?,?,?,?,?,?,?)'
     )
     .run(token, s.location_id, s.channel, s.contact, s.language, s.min_severity, ts, ts);
-  return db.prepare('SELECT * FROM subscribers WHERE id = ?').get(Number(res.lastInsertRowid)) as SubscriberRow;
+  return db.prepare('SELECT * FROM subscribers WHERE id = ?').get(Number(res.lastInsertRowid)) as unknown as SubscriberRow;
 }
 
 export function getSubscriberByToken(db: Db, token: string): SubscriberRow | undefined {
-  return db.prepare('SELECT * FROM subscribers WHERE token = ?').get(token) as SubscriberRow | undefined;
+  return db.prepare('SELECT * FROM subscribers WHERE token = ?').get(token) as unknown as SubscriberRow | undefined;
 }
 
 /** Deletes the subscriber and (via ON DELETE CASCADE) its queued notifications. */
@@ -188,7 +188,7 @@ export function deleteSubscriberByToken(db: Db, token: string): boolean {
 }
 
 export function subscribersFor(db: Db, locationId: string, severity: Severity): SubscriberRow[] {
-  const rows = db.prepare('SELECT * FROM subscribers WHERE location_id = ?').all(locationId) as SubscriberRow[];
+  const rows = db.prepare('SELECT * FROM subscribers WHERE location_id = ?').all(locationId) as unknown as SubscriberRow[];
   return rows.filter((r) => SEVERITY_RANK[severity] >= SEVERITY_RANK[r.min_severity]);
 }
 
