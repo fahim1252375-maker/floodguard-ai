@@ -7,6 +7,18 @@ test('getAdminPin generates random PIN or reads environment variable', () => {
   assert.ok(typeof pin === 'string' && pin.length >= 6);
 });
 
+test('accepts a 64-character generated admin secret', () => {
+  const previous = process.env.ADMIN_PIN;
+  const generatedSecret = 'a'.repeat(64);
+  process.env.ADMIN_PIN = generatedSecret;
+  try {
+    assert.strictEqual(verifyAdminPin(generatedSecret), true);
+  } finally {
+    if (previous === undefined) delete process.env.ADMIN_PIN;
+    else process.env.ADMIN_PIN = previous;
+  }
+});
+
 test('verifyAdminPin validates matching PIN and rejects incorrect ones', () => {
   const actual = getAdminPin();
   assert.strictEqual(verifyAdminPin(actual), true);
