@@ -15,6 +15,7 @@ jobs:
       - name: Create clean source archive
         run: |
           zip -r FloodGuard-AI-Devpost.zip . \
+            -x 'FloodGuard-AI-Devpost.zip' \
             -x '.git/*' \
                '.github/*' \
                'node_modules/*' \
