@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   migrate-and-verify:
-    if: ${{ !contains(github.event.head_commit.message, 'chore: migrate FloodGuard source archive') }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out migration branch
@@ -25,6 +24,7 @@ jobs:
           node-version: 24
 
       - name: Extract source archive
+        if: hashFiles('FloodGuard_AI_v0.2.0.zip') != ''
         shell: bash
         run: |
           set -euo pipefail
@@ -37,6 +37,7 @@ jobs:
           echo "PROJECT_ROOT=$PROJECT_ROOT" >> "$GITHUB_ENV"
 
       - name: Apply focused TypeScript fixes
+        if: hashFiles('FloodGuard_AI_v0.2.0.zip') != ''
         shell: bash
         run: |
           set -euo pipefail
@@ -114,6 +115,7 @@ jobs:
           PY
 
       - name: Synchronize lockfile and install dependencies
+        if: hashFiles('FloodGuard_AI_v0.2.0.zip') != ''
         run: |
           set -euo pipefail
           cd "$PROJECT_ROOT"
@@ -121,6 +123,7 @@ jobs:
           npm ci --no-audit --no-fund
 
       - name: Run TypeScript, unit, server, and production checks
+        if: hashFiles('FloodGuard_AI_v0.2.0.zip') != ''
         run: |
           set -euo pipefail
           cd "$PROJECT_ROOT"
@@ -129,6 +132,7 @@ jobs:
           npm run build
 
       - name: Publish verified source tree to migration branch
+        if: hashFiles('FloodGuard_AI_v0.2.0.zip') != ''
         shell: bash
         run: |
           set -euo pipefail
