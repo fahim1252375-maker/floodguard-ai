@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #020617;
+  --bg-surface: #0b1329;
+  --bg-card: #0f172a;
+  --border-subtle: #1e293b;
+  --border-accent: #06b6d4;
+  --accent-cyan: #06b6d4;
+  --accent-emerald: #10b981;
+  --risk-low: #10b981;
+  --risk-mod: #f59e0b;
+  --risk-high: #f97316;
+  --risk-severe: #ef4444;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-primary);
+    color: #f1f5f9;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  .font-bengali {
+    font-family: 'Noto Sans Bengali', system-ui, sans-serif;
+  }
+
+  /* Accessible focus indicator across all interactive elements */
+  *:focus-visible {
+    outline: 2px solid var(--accent-cyan);
+    outline-offset: 2px;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #06b6d4;
+}
+
+/* Leaflet Dark Customizations */
+.leaflet-container {
+  background-color: #020617 !important;
+  font-family: inherit !important;
+}
+
+.map-tiles-dark {
+  filter: invert(100%) hue-rotate(180deg) brightness(85%) contrast(95%);
+}
+
+.leaflet-popup-content-wrapper {
+  background: #0f172a !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #334155 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+}
+
+.leaflet-popup-tip {
+  background: #0f172a !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: #0f172a !important;
+  color: #38bdf8 !important;
+  border-color: #1e293b !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+/* ========================================================== */
+/* Print-Friendly Stylesheet for A4 One-Pager PDF Export      */
+/* ========================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm;
+  }
+
+  /* Hide app navigation chrome, header, sidebar, floating buttons */
+  header,
+  aside,
+  nav,
+  button,
+  .no-print,
+  .offline-banner,
+  .leaflet-control-zoom,
+  .fixed {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 10.5pt !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Make printable one pager take over full viewport */
+  .printable-one-pager {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .printable-one-pager * {
+    color: #0f172a !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .printable-one-pager h1 {
+    font-size: 18pt !important;
+    font-weight: 900 !important;
+    color: #0284c7 !important;
+    margin-bottom: 2pt !important;
+  }
+
+  .printable-one-pager h2 {
+    font-size: 12pt !important;
+    font-weight: 800 !important;
+    border-bottom: 1.5pt solid #0284c7 !important;
+    padding-bottom: 2pt !important;
+    margin-top: 8pt !important;
+    margin-bottom: 4pt !important;
+  }
+
+  .printable-one-pager h3 {
+    font-size: 10pt !important;
+    font-weight: 700 !important;
+    margin-top: 4pt !important;
+  }
+
+  .printable-one-pager p,
+  .printable-one-pager td,
+  .printable-one-pager th {
+    font-size: 8.5pt !important;
+    line-height: 1.35 !important;
+  }
+
+  .printable-one-pager table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 4pt !important;
+  }
+
+  .printable-one-pager th,
+  .printable-one-pager td {
+    border: 1px solid #cbd5e1 !important;
+    padding: 3pt 5pt !important;
+  }
+
+  .printable-one-pager .badge {
+    border: 1px solid #64748b !important;
+    padding: 1pt 3pt !important;
+    font-size: 7pt !important;
+    font-weight: 700 !important;
+  }
+}
+
+/* Accessibility modes (toggled by AccessibilityToggle) */
+html.fg-large-text { font-size: 118%; }
+html.fg-high-contrast body { background: #000; }
+html.fg-high-contrast .text-slate-400, html.fg-high-contrast .text-slate-500 { color: #e2e8f0 !important; }
+html.fg-high-contrast [class*="border-slate-"] { border-color: #94a3b8 !important; }
+@media print {
+  aside, nav, header.sticky { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+}

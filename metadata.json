@@ -1,0 +1,13 @@
+{
+  "name": "FloodGuard AI",
+  "description": "A bilingual flood-health preparedness prototype for Bangladesh. Combines weather context, modelled hydrological estimates, transparent risk indicators, community reports and response-planning workflows. Not an official warning service.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "FULL_STACK_REACT_EXPRESS_APPLICATION",
+    "GEMINI_ASSISTED_NATURAL_LANGUAGE_FEATURES",
+    "LIVE_WEATHER_AND_MODELLED_HYDROLOGY_CONTEXT",
+    "COMMUNITY_REPORTING_AND_MODERATION",
+    "SQLITE_BACKED_OPERATIONS_CENTER",
+    "BILINGUAL_PROGRESSIVE_WEB_APP"
+  ]
+}
