@@ -112,8 +112,8 @@ In accordance with scientific and hackathon ethics, every data stream in this ap
 
 ### 1. Clone and install
 ```bash
-git clone https://github.com/fahim1252375-maker/floodguard-ai-fullstack.git
-cd floodguard-ai-fullstack
+git clone https://github.com/fahim1252375-maker/floodguard-ai.git
+cd floodguard-ai
 npm ci
 ```
 
