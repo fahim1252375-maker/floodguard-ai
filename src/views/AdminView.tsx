@@ -229,8 +229,8 @@ export const AdminView: React.FC<AdminViewProps> = ({
                   type="password"
                   value={pinInput}
                   onChange={(e) => setPinInput(e.target.value)}
-                  placeholder="Enter the Admin PIN shown in the server setup"
-                  maxLength={16}
+                  placeholder="Enter the Admin PIN or secret configured by the project owner"
+                  maxLength={128}
                   autoFocus
                   className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono text-sm placeholder:text-slate-600 focus:outline-hidden focus:border-cyan-500 transition shadow-inner"
                 />
@@ -265,7 +265,7 @@ export const AdminView: React.FC<AdminViewProps> = ({
           </form>
 
           <div className="pt-3 border-t border-slate-800/80 text-[11px] text-slate-500 font-mono">
-            Set a private PIN in your local <code className="text-cyan-400">.env</code> file using <code className="text-cyan-400">ADMIN_PIN</code>. No shared default PIN is enabled.
+            Set a unique private <code className="text-cyan-400">ADMIN_PIN</code> in the hosting environment. No shared default PIN is enabled.
           </div>
         </div>
       </div>
