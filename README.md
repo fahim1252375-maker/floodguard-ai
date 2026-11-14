@@ -8,7 +8,9 @@
   <strong>A bilingual flood and community-health preparedness prototype for north-eastern Bangladesh.</strong>
 </p>
 
-<p align="center"><strong>Live demos:</strong> <a href="https://flourishing-torrone-237daf.netlify.app">Netlify application</a> · <a href="https://floodguard-ai-39jz.onrender.com">Render service</a></p>
+<p align="center"><strong>Hosted previews:</strong> <a href="https://flourishing-torrone-237daf.netlify.app">Netlify static preview (frontend)</a> · <a href="https://floodguard-ai-39jz.onrender.com">Render full-stack application</a></p>
+
+> **Deployment status:** The connected Netlify production site is currently a manual Drop/static deployment, not a Git-linked deployment, and this repository does not yet include a Netlify API proxy rule. Treat Netlify as a frontend preview; API-backed workflows should be evaluated against the Render full-stack origin. The Render service currently has no persistent disk attached, while reports, alerts, and Operations Center history are written to local files/SQLite. Treat deployed records as ephemeral until durable storage is configured.
 
 <p align="center">
   [![CI](https://github.com/fahim1252375-maker/floodguard-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fahim1252375-maker/floodguard-ai/actions/workflows/ci.yml)
