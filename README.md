@@ -8,6 +8,8 @@
   <strong>A bilingual flood and community-health preparedness prototype for north-eastern Bangladesh.</strong>
 </p>
 
+<p align="center"><strong>Live demos:</strong> <a href="https://flourishing-torrone-237daf.netlify.app">Netlify application</a> · <a href="https://floodguard-ai-39jz.onrender.com">Render service</a></p>
+
 <p align="center">
   [![CI](https://github.com/fahim1252375-maker/floodguard-ai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fahim1252375-maker/floodguard-ai/actions/workflows/ci.yml)
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-0F766E?style=flat-square" alt="MIT License" /></a>
