@@ -9,12 +9,6 @@
 
 </div>
 
-<!-- Project README: FloodGuard AI -->
-
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0B253A,45:0F766E,100:2563EB&height=190&section=header&text=FloodGuard%20AI&fontSize=42&fontColor=ffffff&fontAlignY=38&desc=Predict%20Early.%20Prepare%20Together.&descAlignY=62&descSize=15" alt="FloodGuard AI — Predict Early. Prepare Together." />
-</p>
-
 <p align="center">
   <strong>A bilingual flood and community-health preparedness prototype for north-eastern Bangladesh.</strong>
 </p>
